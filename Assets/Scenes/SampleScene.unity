@@ -1985,37 +1985,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3534827287863045945, guid: ccf0287e4ad9bdd44a8e1f8fbcc92cf1, type: 3}
   m_PrefabInstance: {fileID: 1281783477}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1292640095
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1292640096}
-  m_Layer: 6
-  m_Name: BreadsParent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1292640096
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1292640095}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.35, z: 0.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1845859349}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1001 &1382799954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2688,18 +2657,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1845859350, guid: 44cd37f0f2e49834ba24509b574b1f76, type: 3}
-      propertyPath: m_SlopeLimit
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 1845859350, guid: 44cd37f0f2e49834ba24509b574b1f76, type: 3}
-      propertyPath: m_StepOffset
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2929470082773406066, guid: 44cd37f0f2e49834ba24509b574b1f76, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: c5c15fc80e15c10458838123ed5c2af7, type: 2}
     - target: {fileID: 6120420828103477686, guid: 44cd37f0f2e49834ba24509b574b1f76, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -2750,35 +2707,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44cd37f0f2e49834ba24509b574b1f76, type: 3}
---- !u!1 &1845859348 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6898330439232181004, guid: 44cd37f0f2e49834ba24509b574b1f76, type: 3}
-  m_PrefabInstance: {fileID: 1845859347}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1845859349 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6120420828103477686, guid: 44cd37f0f2e49834ba24509b574b1f76, type: 3}
   m_PrefabInstance: {fileID: 1845859347}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1845859351
+--- !u!114 &1845859351 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 1845859351, guid: 44cd37f0f2e49834ba24509b574b1f76, type: 3}
+  m_PrefabInstance: {fileID: 1845859347}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1845859348}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fac3d1d316abad4e9144641b4aad201, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  breadParent: {fileID: 1292640096}
-  isStacking: 0
-  maxStackSize: 9
-  playerInOven: 0
-  playerInBreadBox: 0
-  moveTime: 0.1
-  moveAnimDuration: 0.3
 --- !u!1 &1889220909
 GameObject:
   m_ObjectHideFlags: 0
