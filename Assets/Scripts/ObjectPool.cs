@@ -6,14 +6,16 @@ using UnityEngine.Pool;
 
 public class ObjectPool : MonoBehaviour
 {
-    public readonly Queue<GameObject> usingObject = new Queue<GameObject>();
+    public readonly List<GameObject> usingObject = new List<GameObject>();
     public readonly Queue<GameObject> objectQueue = new Queue<GameObject>();
     public GameObject poolObject;
     public Transform poolObjectParent;
+    public int initSize;
+    public string objName;
 
     private void Start() 
     {
-        ObjectPoolInit(10);
+        ObjectPoolInit(initSize);
     }
 
     public void ObjectPoolInit(int initSize = 0)
@@ -28,6 +30,7 @@ public class ObjectPool : MonoBehaviour
     public GameObject CreateObject()
     {
         GameObject obj = Instantiate(poolObject, Vector3.zero, Quaternion.identity);
+        obj.name = objName;
         obj.transform.SetParent(poolObjectParent);
         obj.SetActive(false);
 
@@ -47,7 +50,7 @@ public class ObjectPool : MonoBehaviour
             obj = CreateObject();
         }
         obj.SetActive(true);
-        usingObject.Enqueue(obj);
+        usingObject.Add(obj);
         
         return obj;
     }
@@ -56,15 +59,18 @@ public class ObjectPool : MonoBehaviour
     {
         if(obj == null) return;
 
+        if(usingObject.Contains(obj)) usingObject.Remove(obj);
+        
+        obj.transform.SetParent(poolObjectParent);
         obj.SetActive(false);
         objectQueue.Enqueue(obj);
     }
 
     public void ReturnAllObjectInUsingObject()
     {
-        while(usingObject.Count > 0)
+        for(int i = 0; i < usingObject.Count; i++)
         {
-            ReturnObject(usingObject.Dequeue());
+            ReturnObject(usingObject[i]);
         }
     }
 }

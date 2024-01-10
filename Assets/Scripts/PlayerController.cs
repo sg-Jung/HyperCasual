@@ -4,22 +4,36 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Stack")][Space(10f)]
     public Stack<GameObject> playerStack = new Stack<GameObject>();
     public Transform breadParent;
     public bool isStacking;
     public int maxStackSize;
 
+    [Header("Bool")][Space(10f)]
     public bool playerInOven;
     public bool playerInBreadBox;
-    
+    public bool playerInCounter;
+
+    [Header("float")][Space(10f)]
     public float moveTime;
     public float moveAnimDuration;
 
+    [Header("Audio")][Space(10f)]
+    public AudioSource audioSource;
+    public AudioClip stackSound;
+    public AudioClip putSound;
+
     private OvenController oven;
-    private BreadBoxController bBoxController;
+    private BreadBoxController breadBox;
+    private CounterController counter;
 
     private void Start()
     {
+        oven = EventObjectsSingleton.GetOvenController();
+        breadBox = EventObjectsSingleton.GetBreadBoxController();
+        counter = EventObjectsSingleton.GetCounterController();
+
         StartCoroutine(MoveOvenBreadToPlayer());
         StartCoroutine(MovePlayerToBreadBox());
     }
@@ -39,19 +53,21 @@ public class PlayerController : MonoBehaviour
             obj.transform.SetParent(breadParent);
             PlayerStackAnim(obj); // Player 쪽으로 이동하는 애니메이션
 
+            audioSource.PlayOneShot(stackSound);
             playerStack.Push(obj);
         }
     }
 
     private void PopPlayerStack()
     {
-        if (playerStack.Count > 0 && bBoxController.breadBoxQueue.Count < bBoxController.maxBreadsCount)
+        if (playerStack.Count > 0 && breadBox.breadBoxQueue.Count < breadBox.maxBreadsCount)
         {
             var obj = playerStack.Pop();
-            obj.transform.SetParent(bBoxController.breadParent);
+            obj.transform.SetParent(breadBox.breadParent);
             PlayerPopAnim(obj);
 
-            bBoxController.breadBoxQueue.Enqueue(obj);
+            audioSource.PlayOneShot(putSound);
+            breadBox.breadBoxQueue.Enqueue(obj);
         }
     }
 
@@ -66,9 +82,10 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerPopAnim(GameObject obj) // obj는 애니메이션을 적용시킬 Bread
     {
-        obj.transform.localRotation = Quaternion.Euler(new Vector3(0f, 60f, 0f));
-        var goalPose = bBoxController.breadPose[bBoxController.breadBoxQueue.Count];
-
+        obj.transform.localRotation = Quaternion.Euler(0f, 60f, 0f);
+        var goalPose = breadBox.breadPose[breadBox.breadPoseIndex++];
+        breadBox.breadPoseIndex %= breadBox.maxBreadsCount;
+        
         iTween.MoveTo(obj, iTween.Hash("x", goalPose.x, "y", 0, "z", goalPose.z, "islocal", true, "time", moveAnimDuration, "easetype", iTween.EaseType.easeOutQuint));
     }
 
@@ -102,14 +119,18 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Oven"))
         {
-            oven = other.GetComponent<OvenController>();
             playerInOven = true;
         }
         else if(other.CompareTag("BreadBox"))
         {
-            bBoxController = other.GetComponent<BreadBoxController>();
             playerInBreadBox = true;
         }
+        else if(other.CompareTag("Counter"))
+        {
+            playerInCounter = true;
+            counter.playerInCounter = playerInCounter;
+        }
+
     }
 
     private void OnTriggerExit(Collider other) 
@@ -117,12 +138,15 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Oven"))
         {
             playerInOven = false;
-            oven = null;
         }
         else if (other.CompareTag("BreadBox"))
         {
             playerInBreadBox = false;
-            bBoxController = null;
+        }
+        else if (other.CompareTag("Counter"))
+        {
+            playerInCounter = false;
+            counter.playerInCounter = playerInCounter;
         }
     }
 }

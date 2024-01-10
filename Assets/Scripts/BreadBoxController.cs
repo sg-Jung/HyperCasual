@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BreadBoxController : MonoBehaviour
 {
     public Queue<GameObject> breadBoxQueue = new Queue<GameObject>();
     public Transform breadParent;
+    public Transform customerParent;
     public Vector3[] breadPose;
+    public Vector3[] customerPose;
     public int maxBreadsCount;
+    [HideInInspector]public int breadPoseIndex = 0;
 
     private Queue<GameObject> customerQueue = new Queue<GameObject>();
 
@@ -25,8 +29,10 @@ public class BreadBoxController : MonoBehaviour
             // 큐에 고객이 있을 경우 빵 제공 및 처리
             if (customerQueue.Count > 0)
             {
+                if(breadBoxQueue.Count <= 0) continue;
+
                 Customer currentCustomer = customerQueue.Peek().GetComponent<Customer>();
-                currentCustomer.TakeBreadFromShelf();
+                currentCustomer.PushCustomerStack(breadBoxQueue.Dequeue(), 0);
 
                 if (currentCustomer.neededBreadCount <= 0)
                     customerQueue.Dequeue();
