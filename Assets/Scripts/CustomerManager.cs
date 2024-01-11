@@ -14,13 +14,9 @@ public class CustomerManager : MonoBehaviour
 
     private ObjectPool customerPool;
 
-    private void Awake() 
-    {
-        customerPool = ManagerSingleton.GetObjectPool<ObjectPool>("Customer");
-    }
-
     void Start()
     {
+        customerPool = ManagerSingleton.GetObjectPool<ObjectPool>("Customer");
         StartCoroutine(SpawnCustomers());
     }
 

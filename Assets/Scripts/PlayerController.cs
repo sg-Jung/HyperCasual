@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Stack")][Space(10f)]
+    [Header("Money")][Space(10f)]
+    public int curMoney = 0;
+    public TMP_Text moneyText;
+
     public Stack<GameObject> playerStack = new Stack<GameObject>();
+    [Header("Stack")][Space(10f)]
     public Transform breadParent;
     public bool isStacking;
     public int maxStackSize;
@@ -36,6 +41,7 @@ public class PlayerController : MonoBehaviour
 
         StartCoroutine(MoveOvenBreadToPlayer());
         StartCoroutine(MovePlayerToBreadBox());
+        SetMoneyText(curMoney);
     }
 
     private void Update() 
@@ -68,6 +74,7 @@ public class PlayerController : MonoBehaviour
 
             audioSource.PlayOneShot(putSound);
             breadBox.breadBoxQueue.Enqueue(obj);
+            Debug.Log($"Player Input BreadBox: {breadBox.breadBoxQueue.Count}");
         }
     }
 
@@ -89,6 +96,18 @@ public class PlayerController : MonoBehaviour
         iTween.MoveTo(obj, iTween.Hash("x", goalPose.x, "y", 0, "z", goalPose.z, "islocal", true, "time", moveAnimDuration, "easetype", iTween.EaseType.easeOutQuint));
     }
 
+    public void SetMoney(int money)
+    {
+        iTween.ValueTo(gameObject, iTween.Hash("from", curMoney, "to", curMoney + money, "onUpdate", "SetMoneyText", "delay", 0, "time", 0.5));
+        
+        curMoney += money;
+    }
+
+    private void SetMoneyText(int money)
+    {
+        moneyText.text = money.ToString();
+    }
+
     private IEnumerator MoveOvenBreadToPlayer()
     {
         while (true)
@@ -108,10 +127,8 @@ public class PlayerController : MonoBehaviour
         {
             yield return new WaitForSeconds(moveTime);
 
-            if (playerInBreadBox)
-            {
-                PopPlayerStack();
-            }
+            breadBox.isPlayerPutBread = playerInBreadBox && playerStack.Count > 0;
+            if (breadBox.isPlayerPutBread) PopPlayerStack();
         }
     }
 

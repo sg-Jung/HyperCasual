@@ -121,15 +121,19 @@ public class Customer : MonoBehaviour
             {
                 heWantDining = false;
                 payImage.SetActive(true);
+
+                counter.onlyPayCustomerQueue.Enqueue(gameObject);
+                counter.UpdateCustomerPositions(0);
             }
             else // 계산후 식당
             {
                 heWantDining = true;
                 tableImage.SetActive(true);
+
+                counter.diningCustomerQueue.Enqueue(gameObject);
+                counter.UpdateCustomerPositions(1);
             }
 
-            counter.customerQueue.Enqueue(gameObject);
-            counter.UpdateCustomerPositions();
         }
         else if (newState == QuestState.EatInRestaurant)
         {

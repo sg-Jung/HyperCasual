@@ -40,4 +40,5 @@ public class ManagerSingleton : MonoBehaviour
     }
 
     public static CustomerManager GetCustomerManager() => GetManagerComponent<CustomerManager>();
+    public static LockMoneyAreaManager GetLockMoneyAreaManager() => GetManagerComponent<LockMoneyAreaManager>();
 }

@@ -22,4 +22,5 @@ public class EventObjectsSingleton : MonoBehaviour
     public static BreadBoxController GetBreadBoxController() => GetEventObjectComponent<BreadBoxController>();
     public static OvenController GetOvenController() => GetEventObjectComponent<OvenController>();
     public static CounterController GetCounterController() => GetEventObjectComponent<CounterController>();
+    public static DiningController GetDiningController() => GetEventObjectComponent<DiningController>();
 }
