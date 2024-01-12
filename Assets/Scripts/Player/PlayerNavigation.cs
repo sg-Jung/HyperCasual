@@ -76,5 +76,8 @@ public class PlayerNavigation : MonoBehaviour
 
         SetGoalPose(diningTransform.position, tableY);
         yield return new WaitUntil(() => dining.isActive);
+       
+        playerArrow.SetActive(false);
+        objectArrow.SetActive(false);
     }
 }
