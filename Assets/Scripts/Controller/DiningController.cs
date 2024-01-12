@@ -178,11 +178,5 @@ public class DiningController : MonoBehaviour
         isActive = true;
         ActiveDining.SetActive(true);
         DeActiveDining.SetActive(false);
-
-        // lockMoneyArea.transform.localPosition = nextLockMoneyArea;
-        // lockMoneyArea.SetNeedMoney(nextLockMoney);
-        // lockMoneyArea.SetActiveAndLock(true);
-
-        // yield return new WaitUntil(() => !lockMoneyArea.isLock);
     }
 }

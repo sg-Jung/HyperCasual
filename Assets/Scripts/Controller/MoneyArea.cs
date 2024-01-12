@@ -94,7 +94,6 @@ public class MoneyArea : MonoBehaviour
 
         player.SetMoney(money);
         money = 0;
-        Debug.Log($"Player 돈 획득: {player.curMoney}");
     }
 
     private void OnTriggerStay(Collider other) 
@@ -104,7 +103,6 @@ public class MoneyArea : MonoBehaviour
             if (money > 0 && moneyActive)
             {
                 PlayerController player = other.GetComponent<PlayerController>();
-                // PlayerGetMoney(player);
                 if (getMoneyCor == null)
                     StartCoroutine(GetMoney(player));
             }

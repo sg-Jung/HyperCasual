@@ -112,9 +112,7 @@ public class CounterController : MonoBehaviour
                 // 아직 식당이 비활성화이거나, 카운터 앞 까지 오지 않은 경우 continue
                 if (Vector3.Distance(diningCustomer.transform.position, counterPose[1].position) > 0.1f || !dining.isActive) continue;
 
-
                 // 식당에 가는 고객은 식당에서 식사후 돈 지불
-                // PayForPlayer();
                 diningCustomer.SetQuestState(QuestState.EatInRestaurant);
                 diningCustomerQueue.Dequeue();
 
