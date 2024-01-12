@@ -8,10 +8,14 @@ using UnityEngine;
 
 public class MoneyArea : MonoBehaviour
 {
-    public Vector3 startPose;
+    public Transform startPose;
     public Vector3 offset;
     public Transform moneyParent;
     public int money = 0;
+
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip cashSound;
 
     private ObjectPool moneyPool;
 
@@ -48,7 +52,7 @@ public class MoneyArea : MonoBehaviour
                 {
                     if(moneyIndex >= money) return; // money 갯수만큼 생성되면 함수종료
 
-                    Vector3 position = startPose + new Vector3(col * offset.x, height * offset.y, row * offset.z);
+                    Vector3 position = startPose.position + new Vector3(col * offset.x, height * offset.y, row * offset.z);
                     Quaternion rotation = Quaternion.Euler(0f, 90f, 0f);
 
                     var moneyObj = moneyPool.GetObject();
@@ -58,6 +62,17 @@ public class MoneyArea : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void PlayerGetMoney(PlayerController player)
+    {
+        // StartCoroutine(GetMoney(player));
+        player.SetMoney(money);
+        audioSource.PlayOneShot(cashSound);
+
+        BuildMoneyRemove();
+        money = 0;
+        Debug.Log($"Player 돈 획득: {player.curMoney}");
     }
 
 
@@ -85,11 +100,7 @@ public class MoneyArea : MonoBehaviour
             if (money > 0)
             {
                 PlayerController player = other.GetComponent<PlayerController>();
-                // StartCoroutine(GetMoney(player));
-                player.SetMoney(money);
-                BuildMoneyRemove();
-                money = 0;
-                Debug.Log($"Player 돈 획득: {player.curMoney}");
+                PlayerGetMoney(player);
             }
         }
     }

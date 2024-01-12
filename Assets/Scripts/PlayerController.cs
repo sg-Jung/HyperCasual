@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public bool playerInOven;
     public bool playerInBreadBox;
     public bool playerInCounter;
+    public bool playerInDining;
 
     [Header("float")][Space(10f)]
     public float moveTime;
@@ -32,12 +33,14 @@ public class PlayerController : MonoBehaviour
     private OvenController oven;
     private BreadBoxController breadBox;
     private CounterController counter;
+    private DiningController dining;
 
     private void Start()
     {
         oven = EventObjectsSingleton.GetOvenController();
         breadBox = EventObjectsSingleton.GetBreadBoxController();
         counter = EventObjectsSingleton.GetCounterController();
+        dining = EventObjectsSingleton.GetDiningController();
 
         StartCoroutine(MoveOvenBreadToPlayer());
         StartCoroutine(MovePlayerToBreadBox());
@@ -74,7 +77,6 @@ public class PlayerController : MonoBehaviour
 
             audioSource.PlayOneShot(putSound);
             breadBox.breadBoxQueue.Enqueue(obj);
-            Debug.Log($"Player Input BreadBox: {breadBox.breadBoxQueue.Count}");
         }
     }
 
@@ -147,6 +149,12 @@ public class PlayerController : MonoBehaviour
             playerInCounter = true;
             counter.playerInCounter = playerInCounter;
         }
+        else if(other.CompareTag("Dining"))
+        {
+            playerInDining = true;
+            dining.playerInDining = playerInDining;
+            dining.inDiningPlayer = this;
+        }
 
     }
 
@@ -164,6 +172,12 @@ public class PlayerController : MonoBehaviour
         {
             playerInCounter = false;
             counter.playerInCounter = playerInCounter;
+        }
+        else if (other.CompareTag("Dining"))
+        {
+            playerInDining = false;
+            dining.playerInDining = playerInDining;
+            dining.inDiningPlayer = null;
         }
     }
 }

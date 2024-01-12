@@ -24,34 +24,34 @@ public class CounterController : MonoBehaviour
 
     [Header("Audio")][Space(10f)]
     public AudioSource audioSource;
-    public AudioClip cashSound;
+    public AudioClip payMentSound;
 
     private ObjectPool paperBagPool;
     private ObjectPool breadPool;
-    private ObjectPool moneyPool;
 
     private DiningController dining;
+    private MoneyManager moneyManager;
 
     private void Start() 
     {
+        moneyManager = ManagerSingleton.GetMoneyManager();
         paperBagPool = ManagerSingleton.GetObjectPool<ObjectPool>("PaperBag");
         breadPool = ManagerSingleton.GetObjectPool<ObjectPool>("Bread");
-        moneyPool = ManagerSingleton.GetObjectPool<ObjectPool>("Money");
-
         dining = EventObjectsSingleton.GetDiningController();
 
-        StartCoroutine(PlayerPayingForCustomer());
+        StartCoroutine(CustomerPayingToPlayer());
+        StartCoroutine(CustomerWantToDining());
     }
 
-    private IEnumerator PlayerPayingForCustomer()
+    private IEnumerator CustomerPayingToPlayer()
     {
         while(true)
         {
             yield return new WaitUntil(() => playerInCounter);
-            if(onlyPayCustomerQueue.Count <= 0 && diningCustomerQueue.Count <= 0) continue;
+            if(onlyPayCustomerQueue.Count <= 0) continue;
             
             yield return new WaitForSeconds(payingTime);
-//-----------------------------------------------------------------------------------------------
+
             if(onlyPayCustomerQueue.Count > 0)
             {
                 // 식당에 가지 않고 바로 퇴실을 희망하는 고객의 경우
@@ -79,30 +79,38 @@ public class CounterController : MonoBehaviour
                 paperBag.GetComponent<Animator>().SetBool("isBagClose", true);
                 yield return new WaitForSeconds(0.6f);
 
-                PayForPlayer();
+                moneyManager.PayForPlayer(moneyArea);
+                audioSource.PlayOneShot(payMentSound);
+
                 onlyPayCustomer.PushCustomerStack(paperBag, 1);
                 onlyPayCustomer.SetQuestState(QuestState.Leave);
                 onlyPayCustomerQueue.Dequeue();
 
                 UpdateCustomerPositions(0);
             }
-           
-//-----------------------------------------------------------------------------------------------
+        }
+    }
+
+    private IEnumerator CustomerWantToDining()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => dining.isActive);
+            if (diningCustomerQueue.Count <= 0) continue;
+
+            yield return new WaitForSeconds(0.1f);
 
             // 식당에 가서 빵을 먹길 원하는 고객의 경우
-            if(diningCustomerQueue.Count > 0)
+            if (diningCustomerQueue.Count > 0)
             {
                 Customer diningCustomer = diningCustomerQueue.Peek().GetComponent<Customer>();
 
-                if (Vector3.Distance(diningCustomer.transform.position, counterPose[1].position) > 0.1f) continue;
+                // 아직 식당이 비활성화이거나, 카운터 앞 까지 오지 않은 경우 continue
+                if (Vector3.Distance(diningCustomer.transform.position, counterPose[1].position) > 0.1f || !dining.isActive) continue;
 
-                // 아직 식당이 비활성화인 경우 continue
-                if (dining.isActive == false)
-                {
-                    continue;
-                }
 
-                PayForPlayer();
+                // 식당에 가는 고객은 식당에서 식사후 돈 지불
+                // PayForPlayer();
                 diningCustomer.SetQuestState(QuestState.EatInRestaurant);
                 diningCustomerQueue.Dequeue();
 
@@ -111,14 +119,6 @@ public class CounterController : MonoBehaviour
         }
     }
 
-    public void PayForPlayer()
-    {
-        // Player에게 돈을 지불하도록 코드 짜기 (5 ~ 15원 랜덤하게)
-        int money = Random.Range(5, 16);
-
-        moneyArea.BuildMoneyStack(money);
-        audioSource.PlayOneShot(cashSound);
-    }
 
     public void UpdateCustomerPositions(int index) // 줄 서 있는 고객의 위치를 업데이트
     {

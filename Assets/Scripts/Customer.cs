@@ -30,7 +30,7 @@ public class Customer : MonoBehaviour
     public float moveAnimDuration;
     public Transform stackObjParent;
     public Vector3 goalPose;
-    public Vector3 goalObjectPose;
+    public Vector3 goalDirPose;
 
     [Header("Bool")]
     public bool isStacking;
@@ -47,6 +47,7 @@ public class Customer : MonoBehaviour
     private BreadBoxController breadBox;
     private CounterController counter;
     private CustomerManager customerManager;
+    private DiningController dining;
 
     void Awake()
     {
@@ -54,6 +55,7 @@ public class Customer : MonoBehaviour
         nav = GetComponent<NavMeshAgent>();
         breadBox = EventObjectsSingleton.GetBreadBoxController();
         counter = EventObjectsSingleton.GetCounterController();
+        dining = EventObjectsSingleton.GetDiningController();
         customerManager = ManagerSingleton.GetCustomerManager();
 
         SetAllUIActive(false);
@@ -81,8 +83,20 @@ public class Customer : MonoBehaviour
         if (anim == null) return;
         isStacking = customerStack.Count > 0 ? true : false;
 
-        Vector3 dir = goalObjectPose - transform.position;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir, Vector3.up), 3f * Time.deltaTime);
+        Vector3 desiredVelocity = nav.velocity;
+        desiredVelocity.y = 0f; // y 축 회전을 고려하지 않음
+
+        if(nav.velocity.magnitude > 0.1f)
+        {
+            if (desiredVelocity != Vector3.zero)
+            {
+                Quaternion desiredRotation = Quaternion.LookRotation(desiredVelocity.normalized);
+                transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, Time.deltaTime * 5f);
+            }
+        }
+       
+        // Vector3 dir = goalDirPose - transform.position;
+        // transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir, Vector3.up), 3f * Time.deltaTime);
 
         anim.SetBool("isMove", isMove);
         anim.SetBool("isStack", isStacking);
@@ -138,6 +152,8 @@ public class Customer : MonoBehaviour
         else if (newState == QuestState.EatInRestaurant)
         {
             Debug.Log("식당에서 식사하세요.");
+            dining.diningWaitQueue.Enqueue(gameObject);
+            dining.UpdateCustomerPositions();
         }
         else if (newState == QuestState.Leave)
         {
@@ -158,8 +174,7 @@ public class Customer : MonoBehaviour
             case QuestState.TakeBread:
                 if(CheckCustomerArrivedGoalPose() && isMove)
                 {
-                    transform.SetParent(breadBox.customerParent);
-                    isMove = false;
+                    CustomerArrivedPlace(breadBox.customerParent);
                 }
 
                 break;
@@ -167,16 +182,14 @@ public class Customer : MonoBehaviour
             case QuestState.PayAtCheckout:
                 if (CheckCustomerArrivedGoalPose() && isMove)
                 {
-                    transform.SetParent(counter.customerParent);
-                    isMove = false;
+                    CustomerArrivedPlace(counter.customerParent);
                 }
-                    // SetQuestState(QuestState.EatInRestaurant);
                 break;
 
             case QuestState.EatInRestaurant:
-                if (Input.GetKeyDown(KeyCode.E))
+                if (CheckCustomerArrivedGoalPose() && isMove)
                 {
-                    // SetQuestState(QuestState.Leave);
+                    CustomerArrivedPlace(dining.customerParent);
                 }
                 break;
 
@@ -184,13 +197,19 @@ public class Customer : MonoBehaviour
                 if (CheckCustomerArrivedGoalPose() && isMove)
                 {
                     isMove = false;
-                    var obj = customerStack.Pop();
-
-                    ManagerSingleton.GetObjectPool<ObjectPool>("PaperBag").ReturnObject(obj);
+                    
+                    PopAllCustomerStack();
                     ManagerSingleton.GetObjectPool<ObjectPool>("Customer").ReturnObject(this.gameObject);
                 }
                 break;
         }
+    }
+
+    public void CustomerArrivedPlace(Transform parent)
+    {
+        transform.SetParent(parent);
+        transform.LookAt(goalDirPose);
+        isMove = false;
     }
 
     // index 0: 빵, 1: 종이 가방
@@ -229,7 +248,6 @@ public class Customer : MonoBehaviour
             obj.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
             iTween.MoveTo(obj, iTween.Hash("x", 0, "y", 0.5f, "z", 0, "islocal", true, "time", moveAnimDuration, "easetype", iTween.EaseType.easeOutQuint));
         }
-        
     }
 
     public void CustomerPopAnim(GameObject obj, Vector3 position, float animDuration)
@@ -237,6 +255,19 @@ public class Customer : MonoBehaviour
         obj.transform.localRotation = Quaternion.identity;
 
         iTween.MoveTo(obj, iTween.Hash("x", position.x, "y", position.y, "z", position.z, "islocal", false, "time", animDuration, "easetype", iTween.EaseType.easeOutQuint));
+    }
+
+    public void PopAllCustomerStack()
+    {
+        if(customerStack.Count <= 0) return;
+
+        while(customerStack.Count > 0)
+        {
+            var obj = customerStack.Pop();
+
+            if(obj.name.Equals("PaperBag"))
+                ManagerSingleton.GetObjectPool<ObjectPool>("PaperBag").ReturnObject(obj);
+        }
     }
 
     public void DecreaseNeededBreadCount()
@@ -247,18 +278,18 @@ public class Customer : MonoBehaviour
         if(neededBreadCount <= 0) SetQuestState(QuestState.PayAtCheckout);
     }
 
-    public void SetGoalPose(Vector3 goalObjectPose, Vector3 goalPose)
+    public void SetGoalPose(Vector3 goalDirPose, Vector3 goalPose)
     {
-        this.goalObjectPose = goalObjectPose;
+        this.goalDirPose = goalDirPose;
         this.goalPose = goalPose;
         nav.SetDestination(goalPose);
 
         isMove = true;
     }
 
-    public void SetGoalPose(Vector3 goalObjectPose)
+    public void SetGoalPose(Vector3 goalDirPose)
     {
-        this.goalObjectPose = goalObjectPose;
+        this.goalDirPose = goalDirPose;
         nav.SetDestination(goalPose);
 
         isMove = true;

@@ -8,6 +8,7 @@ TagManager:
   - BreadBox
   - Customer
   - Counter
+  - Dining
   layers:
   - Default
   - TransparentFX

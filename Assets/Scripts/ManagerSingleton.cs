@@ -8,7 +8,7 @@ public class ManagerSingleton : MonoBehaviour
 
     private void Awake() 
     {
-        if(instance == null) instance = this;
+        if (instance == null) instance = this;
     }
 
     private static T GetManagerComponent<T>() where T : Component
@@ -41,4 +41,5 @@ public class ManagerSingleton : MonoBehaviour
 
     public static CustomerManager GetCustomerManager() => GetManagerComponent<CustomerManager>();
     public static LockMoneyAreaManager GetLockMoneyAreaManager() => GetManagerComponent<LockMoneyAreaManager>();
+    public static MoneyManager GetMoneyManager() => GetManagerComponent<MoneyManager>();
 }
