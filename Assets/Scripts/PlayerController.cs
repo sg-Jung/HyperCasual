@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public bool playerInOven;
     public bool playerInBreadBox;
     public bool playerInCounter;
+    public bool playerInMoneyArea;
     public bool playerInDining;
 
     [Header("float")][Space(10f)]

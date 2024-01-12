@@ -809,6 +809,7 @@ GameObject:
   - component: {fileID: 6120420828103477686}
   - component: {fileID: 1845859350}
   - component: {fileID: 1845859351}
+  - component: {fileID: 7748433020891758763}
   - component: {fileID: 1845859353}
   m_Layer: 6
   m_Name: Player
@@ -879,6 +880,18 @@ MonoBehaviour:
   audioSource: {fileID: 1845859353}
   stackSound: {fileID: 8300000, guid: 0308d7276b721664f8c895d481b4dd36, type: 3}
   putSound: {fileID: 8300000, guid: 11dd779bf61fdf140ab2facc0d55d332, type: 3}
+--- !u!114 &7748433020891758763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6898330439232181004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82795832f7da0fe4a960db97fa33c367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &1845859353
 AudioSource:
   m_ObjectHideFlags: 0

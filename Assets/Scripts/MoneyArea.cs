@@ -12,6 +12,7 @@ public class MoneyArea : MonoBehaviour
     public Vector3 offset;
     public Transform moneyParent;
     public int money = 0;
+    public bool moneyActive;
 
     [Header("Audio")]
     public AudioSource audioSource;
@@ -40,6 +41,7 @@ public class MoneyArea : MonoBehaviour
     {
         BuildMoneyRemove();
         money += moneyCount;
+        moneyActive = true;
         
         int stackHeight = money / 9 + 1;
         int moneyIndex = 0;
@@ -72,6 +74,7 @@ public class MoneyArea : MonoBehaviour
 
         BuildMoneyRemove();
         money = 0;
+        moneyActive = false;
         Debug.Log($"Player 돈 획득: {player.curMoney}");
     }
 

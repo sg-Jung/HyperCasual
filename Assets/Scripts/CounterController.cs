@@ -21,6 +21,7 @@ public class CounterController : MonoBehaviour
     public float payingTime;
     public float customerPopAnimTime;
     public bool playerInCounter;
+    public bool moneyAreaActive;
 
     [Header("Audio")][Space(10f)]
     public AudioSource audioSource;

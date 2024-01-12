@@ -5,11 +5,14 @@ using UnityEngine.EventSystems;
 
 public class PlayerMoveJoystick : MyJoystick
 {
+    [Space(10f)][Header("MINE")][Space(10f)]
+    public GameObject joyStick;
     public PlayerController playerController;
     public float moveSpeed;
     public float rotateSpeed;
     public float gravity;
     public bool isMove;
+    public bool movingLock;
     private CharacterController cc;
     private Transform player;
     private Animator anim;
@@ -40,7 +43,7 @@ public class PlayerMoveJoystick : MyJoystick
 
     public void Update()
     {
-        if(isMove)
+        if(isMove && !movingLock)
         {
             PlayerMove();
         }
@@ -48,8 +51,16 @@ public class PlayerMoveJoystick : MyJoystick
         AnimationSelect();
     }
 
+    public void SetMovingLock(bool flag)
+    {
+        joyStick.SetActive(!flag);
+        movingLock = flag;
+    }
+
     public override void OnPointerDown(PointerEventData eventData)
     {
+        if(movingLock) return;
+
         background.anchoredPosition = ScreenPointToAnchoredPosition(eventData.position);
         background.gameObject.SetActive(true);
         base.OnPointerDown(eventData);
@@ -58,6 +69,8 @@ public class PlayerMoveJoystick : MyJoystick
 
     public override void OnPointerUp(PointerEventData eventData)
     {
+        if (movingLock) return;
+
         background.gameObject.SetActive(false);
         base.OnPointerUp(eventData);
         isMove = false;
