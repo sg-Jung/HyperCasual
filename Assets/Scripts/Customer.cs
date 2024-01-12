@@ -108,7 +108,6 @@ public class Customer : MonoBehaviour
         // 상태에 따른 동작 수행
         if (newState == QuestState.TakeBread)
         {
-            Debug.Log("빵을 가져가세요.");
             ballon.SetActive(true);
             breadImage.SetActive(true);
             breadCountText.gameObject.SetActive(true);
@@ -121,7 +120,6 @@ public class Customer : MonoBehaviour
         }
         else if (newState == QuestState.PayAtCheckout)
         {
-            Debug.Log("계산대에서 계산하세요.");
             breadImage.SetActive(false);
             breadCountText.gameObject.SetActive(false);
 
@@ -148,13 +146,11 @@ public class Customer : MonoBehaviour
         }
         else if (newState == QuestState.EatInRestaurant)
         {
-            Debug.Log("식당에서 식사하세요.");
             dining.diningWaitQueue.Enqueue(gameObject);
             dining.UpdateCustomerPositions();
         }
         else if (newState == QuestState.Leave)
         {
-            Debug.Log("가게를 떠나세요.");
             ballon.SetActive(false);
             payImage.SetActive(false);
             smileEmoji.gameObject.SetActive(true);

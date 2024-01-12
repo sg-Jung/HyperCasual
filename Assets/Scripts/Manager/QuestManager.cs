@@ -12,13 +12,11 @@ public class QuestManager : MonoBehaviour
 
     private CounterController counter;
     private DiningController dining;
-    private LockMoneyAreaManager lockMoneyAreaManager;
 
     void Start()
     {
         counter = EventObjectsSingleton.GetCounterController();
         dining = EventObjectsSingleton.GetDiningController();
-        lockMoneyAreaManager = ManagerSingleton.GetLockMoneyAreaManager();
         StartCoroutine(PlayerQuestCoroutine());
     }
 
