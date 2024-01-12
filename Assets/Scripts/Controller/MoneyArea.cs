@@ -13,16 +13,25 @@ public class MoneyArea : MonoBehaviour
     public Transform moneyParent;
     public int money = 0;
     public bool moneyActive;
+    public float animDuration;
 
     [Header("Audio")]
     public AudioSource audioSource;
-    public AudioClip cashSound;
 
     private ObjectPool moneyPool;
+    private Coroutine getMoneyCor;
 
     private void Start() 
     {
         moneyPool = ManagerSingleton.GetObjectPool<ObjectPool>("Money");
+    }
+
+    public void PayForPlayer()
+    {
+        // Player에게 돈을 지불하도록 코드 짜기 (5 ~ 15원 랜덤하게)
+        int money = Random.Range(5, 16);
+
+        BuildMoneyStack(money);
     }
 
     void BuildMoneyRemove()
@@ -66,44 +75,38 @@ public class MoneyArea : MonoBehaviour
         }
     }
 
-    public void PlayerGetMoney(PlayerController player)
-    {
-        // StartCoroutine(GetMoney(player));
-        player.SetMoney(money);
-        audioSource.PlayOneShot(cashSound);
-
-        BuildMoneyRemove();
-        money = 0;
-        moneyActive = false;
-        Debug.Log($"Player 돈 획득: {player.curMoney}");
-    }
-
-
     // 포물선을 그리며 돈을 먹도록 나중에 구현해볼 것
     private IEnumerator GetMoney(PlayerController player)
     {
+        moneyActive = false;
+
         Transform[] children = new Transform[moneyParent.childCount];
         for (int i = 0; i < moneyParent.childCount; i++)
             children[i] = moneyParent.GetChild(i);
 
         foreach (Transform child in children)
         {
-            yield return new WaitForSeconds(0.05f);
+            child.SetParabolicMovement(player.animMidPose.position, player.animEndPose.position, animDuration);
+            yield return new WaitForSeconds(animDuration + (animDuration / 2));
+            if(!audioSource.isPlaying) audioSource.Play();
             moneyPool.ReturnObject(child.gameObject);
         }
 
-        player.curMoney += money;
+        player.SetMoney(money);
         money = 0;
+        Debug.Log($"Player 돈 획득: {player.curMoney}");
     }
 
     private void OnTriggerStay(Collider other) 
     {
         if (other.CompareTag("Player"))
         {
-            if (money > 0)
+            if (money > 0 && moneyActive)
             {
                 PlayerController player = other.GetComponent<PlayerController>();
-                PlayerGetMoney(player);
+                // PlayerGetMoney(player);
+                if (getMoneyCor == null)
+                    StartCoroutine(GetMoney(player));
             }
         }
     }

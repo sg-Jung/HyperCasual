@@ -41,13 +41,11 @@ public class DiningController : MonoBehaviour
     public PlayerController inDiningPlayer;
 
     private LockMoneyAreaManager lockMoneyAreaManager;
-    private MoneyManager moneyManager;
     private ObjectPool breadPool;
 
     private void Start() 
     {
         lockMoneyAreaManager = ManagerSingleton.GetLockMoneyAreaManager();
-        moneyManager = ManagerSingleton.GetMoneyManager();
         breadPool = ManagerSingleton.GetObjectPool<ObjectPool>("Bread");
 
         StartCoroutine(CustomerEatingInDining());
@@ -105,7 +103,7 @@ public class DiningController : MonoBehaviour
 
                 isTrashOnTheTable = true;
                 audioSource.PlayOneShot(payMentSound);
-                moneyManager.PayForPlayer(moneyArea);
+                moneyArea.PayForPlayer();
 
                 customer.SetQuestState(QuestState.Leave);
 

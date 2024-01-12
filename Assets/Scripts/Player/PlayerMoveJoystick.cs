@@ -13,9 +13,12 @@ public class PlayerMoveJoystick : MyJoystick
     public float gravity;
     public bool isMove;
     public bool movingLock;
+    public GameObject startText;
     private CharacterController cc;
     private Transform player;
     private Animator anim;
+
+    private bool isFirstTouch = false;
 
     protected override void Start()
     {
@@ -59,7 +62,13 @@ public class PlayerMoveJoystick : MyJoystick
 
     public override void OnPointerDown(PointerEventData eventData)
     {
-        if(movingLock) return;
+        if (movingLock) return;
+
+        if (!isFirstTouch)
+        {
+            isFirstTouch = true;
+            Destroy(startText);
+        }
 
         background.anchoredPosition = ScreenPointToAnchoredPosition(eventData.position);
         background.gameObject.SetActive(true);

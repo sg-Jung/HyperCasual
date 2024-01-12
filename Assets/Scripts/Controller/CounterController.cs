@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class CounterController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class CounterController : MonoBehaviour
     public Transform customerParent;
     public Transform paperBagPose;
     public Transform paperBagEntrancePose;
+    public Transform animMidPose;
 
     [Header("Money")][Space(10f)]
     public MoneyArea moneyArea;
@@ -31,11 +33,9 @@ public class CounterController : MonoBehaviour
     private ObjectPool breadPool;
 
     private DiningController dining;
-    private MoneyManager moneyManager;
 
     private void Start() 
     {
-        moneyManager = ManagerSingleton.GetMoneyManager();
         paperBagPool = ManagerSingleton.GetObjectPool<ObjectPool>("PaperBag");
         breadPool = ManagerSingleton.GetObjectPool<ObjectPool>("Bread");
         dining = EventObjectsSingleton.GetDiningController();
@@ -71,7 +71,10 @@ public class CounterController : MonoBehaviour
                 while (onlyPayCustomer.customerStack.Count > 0)
                 {
                     var bread = onlyPayCustomer.customerStack.Pop();
-                    onlyPayCustomer.CustomerPopAnim(bread, paperBagEntrancePose.position, customerPopAnimTime);
+
+                    // 빵이 종이 가방으로 포물선을 그리며 들어가는 애니메이션 실행
+                    bread.transform.SetParabolicMovement(animMidPose.position, paperBagEntrancePose.position, customerPopAnimTime);
+
                     yield return new WaitForSeconds(customerPopAnimTime + 0.1f);
                     breadPool.ReturnObject(bread);
                 }
@@ -80,7 +83,7 @@ public class CounterController : MonoBehaviour
                 paperBag.GetComponent<Animator>().SetBool("isBagClose", true);
                 yield return new WaitForSeconds(0.6f);
 
-                moneyManager.PayForPlayer(moneyArea);
+                moneyArea.PayForPlayer();
                 audioSource.PlayOneShot(payMentSound);
 
                 onlyPayCustomer.PushCustomerStack(paperBag, 1);

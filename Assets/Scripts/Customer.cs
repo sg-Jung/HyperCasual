@@ -94,9 +94,6 @@ public class Customer : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, Time.deltaTime * 5f);
             }
         }
-       
-        // Vector3 dir = goalDirPose - transform.position;
-        // transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir, Vector3.up), 3f * Time.deltaTime);
 
         anim.SetBool("isMove", isMove);
         anim.SetBool("isStack", isStacking);
@@ -266,7 +263,9 @@ public class Customer : MonoBehaviour
             var obj = customerStack.Pop();
 
             if(obj.name.Equals("PaperBag"))
+            {
                 ManagerSingleton.GetObjectPool<ObjectPool>("PaperBag").ReturnObject(obj);
+            }
         }
     }
 

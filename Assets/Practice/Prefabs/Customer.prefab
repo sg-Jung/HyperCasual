@@ -981,7 +981,7 @@ MonoBehaviour:
   moveAnimDuration: 0.3
   stackObjParent: {fileID: 4398955743078549186}
   goalPose: {x: 0, y: 0, z: 0}
-  goalObjectPose: {x: 0, y: 0, z: 0}
+  goalDirPose: {x: 0, y: 0, z: 0}
   isStacking: 0
   isMove: 0
   isTalking: 0

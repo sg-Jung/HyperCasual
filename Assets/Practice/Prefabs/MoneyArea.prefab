@@ -179,8 +179,9 @@ MonoBehaviour:
   offset: {x: 0.8, y: 0.25, z: -0.6}
   moneyParent: {fileID: 7828805415919562620}
   money: 0
+  moneyActive: 0
+  animDuration: 0.01
   audioSource: {fileID: -3566917652533637082}
-  cashSound: {fileID: 8300000, guid: 5e980ad86d045462d8f203d5f5aaa2c8, type: 3}
 --- !u!82 &-3566917652533637082
 AudioSource:
   m_ObjectHideFlags: 0
@@ -191,7 +192,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 5e980ad86d045462d8f203d5f5aaa2c8, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

@@ -9,11 +9,16 @@ public class PlayerController : MonoBehaviour
     public int curMoney = 0;
     public TMP_Text moneyText;
 
+    [Header("AnimPose")][Space(10f)]
+    public Transform animMidPose;
+    public Transform animEndPose;
+
     public Stack<GameObject> playerStack = new Stack<GameObject>();
     [Header("Stack")][Space(10f)]
     public Transform breadParent;
     public bool isStacking;
     public int maxStackSize;
+    public GameObject maxText;
 
     [Header("Bool")][Space(10f)]
     public bool playerInOven;
@@ -51,6 +56,9 @@ public class PlayerController : MonoBehaviour
     private void Update() 
     {
         isStacking = playerStack.Count > 0 ? true : false;
+        
+        maxText.transform.rotation = Quaternion.identity;
+        maxText.SetActive(playerStack.Count >= maxStackSize);
     }
 
     private void PushPlayerStack()
